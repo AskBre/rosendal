@@ -31,6 +31,7 @@ class ofApp : public ofBaseApp{
 		ofCamera cam;
 		ofLight light;
 		ofPoint camForce;
+		ofPoint panForce;;
 		ofPoint prevMouse;
 		ofVec3f scale;
 
