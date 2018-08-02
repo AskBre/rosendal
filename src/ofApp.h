@@ -10,6 +10,7 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
 
+		void updateCam();
 		void exportPly(ofxAssimpModelLoader &model);
 		ofMesh makeMesh(ofxAssimpModelLoader &model);
 		void drawCamPos();
@@ -34,6 +35,7 @@ class ofApp : public ofBaseApp{
 		ofPoint panForce;;
 		ofPoint prevMouse;
 		ofVec3f scale;
+		vector<bool> keys;
 
 		ofxBulletWorldRigid world;
 		ofxBulletBox ground;

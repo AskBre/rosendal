@@ -9,6 +9,7 @@ void ofApp::setup(){
 //	ofSetOrientation(OF_ORIENTATION_DEFAULT,false);
 
 	scale.set(0.01);
+	keys.resize(8);
 	
 	model.loadModel("Rosendal Teater_ARK Contiga skyveamfi.ifc", false);
 //	model.optimizeScene();
@@ -68,6 +69,8 @@ void ofApp::update(){
 		panForce *= 0.9;
 	}
 
+	updateCam();
+
 //	cam.lookAt(sphere->getPosition());
 
 //	model.update();
@@ -110,6 +113,21 @@ void ofApp::draw(){
 }
 
 //--------------------------------------------------------------
+void ofApp::updateCam() {
+	float camVel = 1;
+	float panVel = 0.5;
+
+	if(keys.at(0)) camForce.z -= camVel;
+	if(keys.at(1)) camForce.z += camVel;
+	if(keys.at(2)) camForce.x += camVel;
+	if(keys.at(3)) camForce.x -= camVel;
+
+	if(keys.at(4)) panForce.y -= panVel;
+	if(keys.at(5)) panForce.y += panVel;
+	if(keys.at(6)) panForce.x -= panVel;
+	if(keys.at(7)) panForce.x += panVel;
+}
+
 void ofApp::exportPly(ofxAssimpModelLoader &model) {
 	ofMesh bigMesh;
 
@@ -143,38 +161,62 @@ ofPoint ofApp::randomPoint(int min, int max) {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-	float camVel = 1;
-	float panVel = 0.5;
 	switch (key) {
 		case 119:
-			camForce.z -= camVel;
+			keys.at(0) = true;
 			break;
 		case 115:
-			camForce.z += camVel;
+			keys.at(1) = true;
 			break;
 		case 100:
-			camForce.x += camVel;
+			keys.at(2) = true;
 			break;
 		case 97:
-			camForce.x -= camVel;
+			keys.at(3) = true;
 			break;
 		case OF_KEY_UP:
-			panForce.y += panVel;
+			keys.at(4) = true;
 			break;
 		case OF_KEY_DOWN:
-			panForce.y -= panVel;
+			keys.at(5) = true;
 			break;
 		case OF_KEY_RIGHT:
-			panForce.x -= panVel;
+			keys.at(6) = true;
 			break;
 		case OF_KEY_LEFT:
-			panForce.x += panVel;
+			keys.at(7) = true;
 			break;
 	}
 
 }
 
 void ofApp::keyReleased(int key){
+	switch (key) {
+		case 119:
+			keys.at(0) = false;
+			break;
+		case 115:
+			keys.at(1) = false;
+			break;
+		case 100:
+			keys.at(2) = false;
+			break;
+		case 97:
+			keys.at(3) = false;
+			break;
+		case OF_KEY_UP:
+			keys.at(4) = false;
+			break;
+		case OF_KEY_DOWN:
+			keys.at(5) = false;
+			break;
+		case OF_KEY_RIGHT:
+			keys.at(6) = false;
+			break;
+		case OF_KEY_LEFT:
+			keys.at(7) = false;
+			break;
+	}
 
 }
 
