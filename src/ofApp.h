@@ -13,6 +13,8 @@ class ofApp : public ofBaseApp{
 		void draw();
 
 		void drawHouse();
+		void drawRibbon();
+		void fillRibbon();
 
 		ofPoint randomPoint(int min=0, int max=1000);
 
@@ -26,6 +28,8 @@ class ofApp : public ofBaseApp{
 		Player player;
 
 		ofxBulletWorldRigid world;
-		ofxBulletBox ground;
 		vector<ofxBulletCustomShape*> house;
+
+		ofMesh playerRibbon;
+
 };

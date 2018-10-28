@@ -10,6 +10,9 @@ class Player : public ofBaseApp{
 		void keyPressed(int key);
 		void keyReleased(int key);
 
+		ofVec3f getPosition() {return cam.getPosition();};
+		float getRoll() {return cam.getRollDeg();};
+
 		ofCamera cam;
 
 		void setPosition(int x=0, int y=0, int z=0);

@@ -5,18 +5,19 @@ void ofApp::setup(){
 	ofSetFrameRate(60);
 	ofSetVerticalSync(true);
 	ofBackground(10, 10, 10);
-	ofSetLogLevel(OF_LOG_VERBOSE);
+//	ofSetLogLevel(OF_LOG_VERBOSE);
 //	ofSetOrientation(OF_ORIENTATION_DEFAULT,false);
+
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_NORMALIZE);
 
 	scale.set(0.01);
 
 	player.setup();
+	playerRibbon.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
 	
 	model.loadModel("Rosendal Teater_ARK Contiga skyveamfi.ifc", false);
-//	model.optimizeScene();
-//	model.setScaleNormalization(true);
 	model.setScale(scale.x, scale.y, scale.z);
-//	model.setPosition(0,0,0);
 
 	world.setup();
 	world.setGravity( ofVec3f(0, 0, 0) );
@@ -39,15 +40,11 @@ void ofApp::setup(){
 	}
 
 	light.setPosition(-500,-500,-500);
-
-	ground.create( world.world, ofVec3f(0., -100, 0.), 0., 100.f, 1.f, 100.f );
-//	ground.setProperties(.25, .95);
-	ground.add();
-
 }
 
 void ofApp::update(){
 	player.update();
+	if(!(ofGetSeconds()%2)) fillRibbon();
 
 //	model.update();
 	world.update();
@@ -55,18 +52,19 @@ void ofApp::update(){
 
 void ofApp::draw(){
 	ofEnableDepthTest();
-	glShadeModel(GL_SMOOTH);
-	glEnable(GL_NORMALIZE);
 
 	ofSetColor(255);
 	light.enable();
 	player.cam.begin();
 	drawHouse();	
+	drawRibbon();
 
 	// world.drawDebug();
 	// model.drawFaces();
 	player.cam.end();
 	light.disable();
+
+	ofDrawBitmapString(ofGetFrameRate(), 10, 10);
 }
 
 //--------------------------------------------------------------
@@ -84,6 +82,21 @@ void ofApp::drawHouse() {
 		house[i]->restoreTransformGL();
 		material.end();
 	}
+}
+
+void ofApp::fillRibbon() {
+	ofPoint pos = player.getPosition();
+
+	playerRibbon.addVertex(pos); // make a new vertex
+        playerRibbon.addColor(ofFloatColor(255));  // add a color at that vertex
+
+	pos.x += 10;
+	playerRibbon.addVertex(pos); // make a new vertex
+        playerRibbon.addColor(ofFloatColor(255));  // add a color at that vertex
+}
+
+void ofApp::drawRibbon() {
+	playerRibbon.drawFaces();
 }
 
 ofPoint ofApp::randomPoint(int min, int max) {
