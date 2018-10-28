@@ -22,14 +22,19 @@ class ofApp : public ofBaseApp{
 		void keyReleased(int key);
 		
 		ofxAssimpModelLoader model;
-		ofLight light;
+
+		ofLight light1;
+		ofLight light2;
 		ofVec3f scale;
 
 		Player player;
 
 		ofxBulletWorldRigid world;
 		vector<ofxBulletCustomShape*> house;
+		vector<ofVboMesh> houseMeshes;
+		vector<ofMaterial> houseMaterials;
 
 		ofMesh playerRibbon;
+		ofMaterial ribbonMaterial;
 
 };

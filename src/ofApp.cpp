@@ -8,13 +8,17 @@ void ofApp::setup(){
 //	ofSetLogLevel(OF_LOG_VERBOSE);
 //	ofSetOrientation(OF_ORIENTATION_DEFAULT,false);
 
-	glShadeModel(GL_SMOOTH);
+//	glShadeModel(GL_SMOOTH);
 	glEnable(GL_NORMALIZE);
+	ofEnableDepthTest();
 
 	scale.set(0.01);
 
 	player.setup();
 	playerRibbon.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+	ribbonMaterial.setDiffuseColor(ofFloatColor::red);
+	ribbonMaterial.setSpecularColor(ofColor(255, 255, 255, 255));
+	ribbonMaterial.setShininess(120);
 	
 	model.loadModel("Rosendal Teater_ARK Contiga skyveamfi.ifc", false);
 	model.setScale(scale.x, scale.y, scale.z);
@@ -36,10 +40,15 @@ void ofApp::setup(){
 		h->add();
 
 		house.push_back(h);
-		ofLogNotice("Loaded") << meshNames[i];
+		houseMeshes.push_back(model.getMesh(i));
+		houseMaterials.push_back(model.getMaterialForMesh(i));
+
+//		houseMeshes.at(i).mergeDuplicateVertices();
 	}
 
-	light.setPosition(-500,-500,-500);
+	ofLogNotice("Loaded ") << house.size() << "elements";
+	light1.setPosition(-500,-500,-500);
+	light2.setPosition(500,500,500);
 }
 
 void ofApp::update(){
@@ -51,36 +60,35 @@ void ofApp::update(){
 }
 
 void ofApp::draw(){
-	ofEnableDepthTest();
-
 	ofSetColor(255);
-	light.enable();
+	light1.enable();
+	light2.enable();
 	player.cam.begin();
 	drawHouse();	
 	drawRibbon();
 
 	// world.drawDebug();
-	// model.drawFaces();
+//	model.drawFaces();
 	player.cam.end();
-	light.disable();
+	light1.disable();
+	light2.disable();
 
+	ofSetColor(255, 255, 255, 255);
+	ofFill();
+	ofDrawRectRounded(0, 0, 75, 20, 5);
+	ofSetColor(0,0,0,255);
 	ofDrawBitmapString(ofGetFrameRate(), 10, 10);
 }
 
 //--------------------------------------------------------------
 void ofApp::drawHouse() {
 	for(unsigned i=0; i<house.size(); i++) {
-		ofxAssimpMeshHelper & meshHelper = model.getMeshHelper(i);
-		ofMaterial & material = meshHelper.material;
-		if(meshHelper.hasTexture()){
-			meshHelper.getTextureRef().bind();
-		}
-		material.begin();
+		houseMaterials.at(i).begin();
 		house[i]->transformGL();
 		ofScale(scale);
-		model.getMesh(i).drawFaces();
+		houseMeshes.at(i).drawFaces();
 		house[i]->restoreTransformGL();
-		material.end();
+		houseMaterials.at(i).end();
 	}
 }
 
@@ -90,13 +98,15 @@ void ofApp::fillRibbon() {
 	playerRibbon.addVertex(pos); // make a new vertex
         playerRibbon.addColor(ofFloatColor(255));  // add a color at that vertex
 
-	pos.x += 10;
+	pos.x += 5;
 	playerRibbon.addVertex(pos); // make a new vertex
         playerRibbon.addColor(ofFloatColor(255));  // add a color at that vertex
 }
 
 void ofApp::drawRibbon() {
+	ribbonMaterial.begin();
 	playerRibbon.drawFaces();
+	ribbonMaterial.end();
 }
 
 ofPoint ofApp::randomPoint(int min, int max) {
