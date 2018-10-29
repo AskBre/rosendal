@@ -13,8 +13,6 @@ class ofApp : public ofBaseApp{
 		void draw();
 
 		void drawHouse();
-		void drawRibbon();
-		void fillRibbon();
 
 		ofPoint randomPoint(int min=0, int max=1000);
 
@@ -33,8 +31,4 @@ class ofApp : public ofBaseApp{
 		vector<ofxBulletCustomShape*> house;
 		vector<ofVboMesh> houseMeshes;
 		vector<ofMaterial> houseMaterials;
-
-		ofMesh playerRibbon;
-		ofMaterial ribbonMaterial;
-
 };

@@ -7,9 +7,16 @@ void Player::setup() {
 
 	camForce.set(ofPoint(0));
 	panForce.set(ofPoint(0));
+
+	ribbon.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+	ribbonMaterial.setDiffuseColor(ofFloatColor::red);
+	ribbonMaterial.setSpecularColor(ofColor(255, 255, 255, 255));
+	ribbonMaterial.setShininess(120);
+
 }
 
 void Player::update() {
+	fillRibbon();
 	updateCam();
 }
 
@@ -74,6 +81,13 @@ void Player::keyReleased(int key){
 }
 
 //--------------------------------------------------------------
+void Player::drawRibbon() {
+	ribbonMaterial.begin();
+	ribbon.drawFaces();
+	ribbonMaterial.end();
+}
+
+//--------------------------------------------------------------
 void Player::updateCam() {
 	if(camForce != ofPoint(0)) {
 		cam.dolly(camForce.z);
@@ -104,4 +118,15 @@ void Player::updateCam() {
 void Player::drawCamPos() {
 	string camPosString = "Pos: " + ofToString(cam.getPosition());
 	ofDrawBitmapString(camPosString, 10, 10);
+}
+
+void Player::fillRibbon() {
+	ofPoint pos = cam.getPosition();
+
+	ribbon.addVertex(pos); // make a new vertex
+        ribbon.addColor(ofFloatColor(255));  // add a color at that vertex
+
+	pos.x += 5;
+	ribbon.addVertex(pos); // make a new vertex
+        ribbon.addColor(ofFloatColor(255));  // add a color at that vertex
 }

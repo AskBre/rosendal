@@ -10,8 +10,7 @@ class Player : public ofBaseApp{
 		void keyPressed(int key);
 		void keyReleased(int key);
 
-		ofVec3f getPosition() {return cam.getPosition();};
-		float getRoll() {return cam.getRollDeg();};
+		void drawRibbon();
 
 		ofCamera cam;
 
@@ -21,8 +20,13 @@ class Player : public ofBaseApp{
 		void updateCam();
 		void drawCamPos();
 
+		void fillRibbon();
+
 		ofPoint camForce;
 		ofPoint panForce;
 
 		vector<bool> keys;
+
+		ofMesh ribbon;
+		ofMaterial ribbonMaterial;
 };
