@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxAssimpModelLoader.h"
 #include "ofxBullet.h"
+#include "ofxNetwork.h"
 
 #include "Player.h"
 
@@ -31,4 +32,7 @@ class ofApp : public ofBaseApp{
 		vector<ofxBulletCustomShape*> house;
 		vector<ofVboMesh> houseMeshes;
 		vector<ofMaterial> houseMaterials;
+
+		ofxUDPManager udpSender;
+		ofxUDPManager udpReceiver;
 };

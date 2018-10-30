@@ -43,13 +43,31 @@ void ofApp::setup(){
 	ofLogNotice("Loaded ") << house.size() << "elements";
 	light1.setPosition(-500,-500,-500);
 	light2.setPosition(500,500,500);
+
+
+	// Multiplayer stuff
+	ofxUDPSettings settings;
+	settings.sendTo("127.0.0.1", 12000);
+	settings.blocking = false;
+	udpSender.Setup(settings);
+
+	settings.receiveOn(12001);
+	udpReceiver.Setup(settings);
 }
 
 void ofApp::update(){
 	player.update();
-//	if(!(ofGetSeconds()%2)) fillRibbon();
-//	model.update();
 	world.update();
+
+	// Multiplayer stuff
+	// TODO Only send when pos is changed
+	string sendMessage = ofToString(player.getPosition());
+	udpSender.Send(sendMessage.c_str(), sendMessage.length());
+
+	char udpMessage[100000];
+	udpReceiver.Receive(udpMessage, 100000);
+	string recMessage = udpMessage;
+//	ofLogNotice("Received udp:") << recMessage;
 }
 
 void ofApp::draw(){

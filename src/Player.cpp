@@ -12,12 +12,12 @@ void Player::setup() {
 	ribbonMaterial.setDiffuseColor(ofFloatColor::red);
 	ribbonMaterial.setSpecularColor(ofColor(255, 255, 255, 255));
 	ribbonMaterial.setShininess(120);
-
 }
 
 void Player::update() {
 	fillRibbon();
 	updateCam();
+
 }
 
 void Player::keyPressed(int key){

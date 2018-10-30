@@ -15,6 +15,7 @@ class Player : public ofBaseApp{
 		ofCamera cam;
 
 		void setPosition(int x=0, int y=0, int z=0);
+		ofPoint getPosition(){return cam.getPosition();};
 	private:
 
 		void updateCam();
