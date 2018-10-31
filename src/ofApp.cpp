@@ -15,6 +15,8 @@ void ofApp::setup(){
 	scale.set(0.01);
 
 	player.setup();
+	player2.setPosition(-240, -270, -300);
+	player2.lookAt(ofVec3f(0,0,0), ofVec3f(0, -1, 0));
 		
 	model.loadModel("Rosendal Teater_ARK Contiga skyveamfi.ifc", false);
 	model.setScale(scale.x, scale.y, scale.z);
@@ -47,7 +49,7 @@ void ofApp::setup(){
 
 	// Multiplayer stuff
 	ofxUDPSettings settings;
-	settings.sendTo("127.0.0.1", 12000);
+	settings.sendTo("192.168.1.195", 12000);
 	settings.blocking = false;
 	udpSender.Setup(settings);
 
@@ -61,13 +63,28 @@ void ofApp::update(){
 
 	// Multiplayer stuff
 	// TODO Only send when pos is changed
-	string sendMessage = ofToString(player.getPosition());
+	ofPoint p = player.getPosition();
+
+	int x = (int)p.x;
+	int y = (int)p.y;
+	int z = (int)p.z;
+
+	string sendMessage = ofToString(x) + "," + ofToString(y) + "," + ofToString(z);
 	udpSender.Send(sendMessage.c_str(), sendMessage.length());
 
 	char udpMessage[100000];
-	udpReceiver.Receive(udpMessage, 100000);
-	string recMessage = udpMessage;
-//	ofLogNotice("Received udp:") << recMessage;
+	if(udpReceiver.Receive(udpMessage, 100000)){
+		string recMessage = udpMessage;
+		ofLogNotice("Received udp:") << recMessage;
+
+		vector<string> coordinates = ofSplitString(recMessage, ",");
+		ofPoint pos;
+		pos.x = stoi(coordinates.at(0));
+		pos.y = stoi(coordinates.at(1));
+		pos.z = stoi(coordinates.at(2));
+
+		player2.setPosition(pos);
+	}
 }
 
 void ofApp::draw(){
@@ -77,6 +94,7 @@ void ofApp::draw(){
 
 	player.cam.begin();
 	drawHouse();	
+	player2.draw();
 	player.drawRibbon();
 
 	// world.drawDebug();

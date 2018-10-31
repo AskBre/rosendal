@@ -27,6 +27,7 @@ class ofApp : public ofBaseApp{
 		ofVec3f scale;
 
 		Player player;
+		ofConePrimitive player2;
 
 		ofxBulletWorldRigid world;
 		vector<ofxBulletCustomShape*> house;
