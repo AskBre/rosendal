@@ -10,16 +10,19 @@
 class ofApp : public ofBaseApp{
 	public:
 		void setup();
-		void update();
-		void draw();
+		void setupNetwork();
 
+		void update();
+		void updateNetwork();
+
+		void draw();
 		void drawHouse();
 
-		ofPoint randomPoint(int min=0, int max=1000);
+		glm::vec3 randomPoint(int min=0, int max=1000);
 
 		void keyPressed(int key);
 		void keyReleased(int key);
-		
+
 		ofxAssimpModelLoader model;
 
 		ofLight light1;
@@ -27,7 +30,7 @@ class ofApp : public ofBaseApp{
 		ofVec3f scale;
 
 		Player player;
-		ofConePrimitive player2;
+		Player player2;
 
 		ofxBulletWorldRigid world;
 		vector<ofxBulletCustomShape*> house;

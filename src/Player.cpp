@@ -1,37 +1,53 @@
 #include "Player.h"
 
-void Player::setup() {
-	keys.resize(8);
-	cam.setPosition(-240,-270,-300);
-	cam.lookAt(ofVec3f(0,0,0), ofVec3f(0, -1, 0));
+void Player::setup(bool _isLocal) {
+	isLocal = _isLocal;
 
-	camForce.set(ofPoint(0));
-	panForce.set(ofPoint(0));
+	keys.resize(8);
+	node.setPosition(-240,-270,-300);
+	node.lookAt(ofVec3f(0,0,0), ofVec3f(0, -1, 0));
+
+	cam.setParent(node);
 
 	ribbon.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
 	ribbonMaterial.setDiffuseColor(ofFloatColor::red);
-	ribbonMaterial.setSpecularColor(ofColor(255, 255, 255, 255));
-	ribbonMaterial.setShininess(120);
 }
 
 void Player::update() {
 	fillRibbon();
-	updateCam();
+	updatePos();
 
 }
 
+void Player::draw() {
+	node.transformGL();
+		ofDrawCone(10,30);
+	node.restoreTransformGL();
+}
+
+void Player::drawRibbon() {
+	ribbonMaterial.begin();
+	ribbon.drawFaces();
+	ribbonMaterial.end();
+}
+
+void Player::moveTo(glm::vec3 pos) {
+	targetPos = pos;	
+}
+
+//--------------------------------------------------------------
 void Player::keyPressed(int key){
 	switch (key) {
-		case 119:
+		case 'w':
 			keys.at(0) = true;
 			break;
-		case 115:
+		case 's':
 			keys.at(1) = true;
 			break;
-		case 100:
+		case 'd':
 			keys.at(2) = true;
 			break;
-		case 97:
+		case 'a':
 			keys.at(3) = true;
 			break;
 		case OF_KEY_UP:
@@ -52,16 +68,16 @@ void Player::keyPressed(int key){
 
 void Player::keyReleased(int key){
 	switch (key) {
-		case 119:
+		case 'w':
 			keys.at(0) = false;
 			break;
-		case 115:
+		case 's':
 			keys.at(1) = false;
 			break;
-		case 100:
+		case 'd':
 			keys.at(2) = false;
 			break;
-		case 97:
+		case 'a':
 			keys.at(3) = false;
 			break;
 		case OF_KEY_UP:
@@ -81,47 +97,60 @@ void Player::keyReleased(int key){
 }
 
 //--------------------------------------------------------------
-void Player::drawRibbon() {
-	ribbonMaterial.begin();
-	ribbon.drawFaces();
-	ribbonMaterial.end();
+void Player::updatePos() {
+	
+	// Only look for keys and update stuff if player is locally controllable
+	if(isLocal) {
+		if(movForce != glm::vec3(0)) {
+			node.dolly(movForce.z);
+			node.truck(movForce.x);
+			movForce *= 0.9;
+		}
+
+		if(panForce != glm::vec3(0)) {
+			node.panDeg(panForce.x);
+			node.tiltDeg(panForce.y);
+			panForce *= 0.9;
+		}
+
+		float movVel = 1;
+		float panVel = 0.5;
+
+		if(keys.at(0)) movForce.z -= movVel;
+		if(keys.at(1)) movForce.z += movVel;
+		if(keys.at(2)) movForce.x += movVel;
+		if(keys.at(3)) movForce.x -= movVel;
+
+		if(keys.at(4)) panForce.y -= panVel;
+		if(keys.at(5)) panForce.y += panVel;
+		if(keys.at(6)) panForce.x -= panVel;
+		if(keys.at(7)) panForce.x += panVel;
+	} else {
+		if(node.getPosition() != targetPos) {
+			ofNode tmpNode = node;;
+			tmpNode.lookAt(targetPos, glm::vec3(0,1,0));
+			tmpNode.tiltDeg(90);
+			glm::quat lookDiff = glm::mix(node.getOrientationQuat(), tmpNode.getOrientationQuat(), (float)0.05);
+			node.setOrientation(lookDiff);
+
+			glm::vec3 amtVec;
+			amtVec.x = 0.02;
+			amtVec.y = 0.02;
+			amtVec.z = 0.02;
+
+			glm::vec3 newPos = glm::mix(node.getPosition(), targetPos, amtVec);
+			node.setPosition(newPos);
+		}
+	}
 }
 
-//--------------------------------------------------------------
-void Player::updateCam() {
-	if(camForce != ofPoint(0)) {
-		cam.dolly(camForce.z);
-		cam.truck(camForce.x);
-		camForce *= 0.9;
-	}
-
-	if(panForce != ofPoint(0)) {
-		cam.panDeg(panForce.x);
-		cam.tiltDeg(panForce.y);
-		panForce *= 0.9;
-	}
-
-	float camVel = 1;
-	float panVel = 0.5;
-
-	if(keys.at(0)) camForce.z -= camVel;
-	if(keys.at(1)) camForce.z += camVel;
-	if(keys.at(2)) camForce.x += camVel;
-	if(keys.at(3)) camForce.x -= camVel;
-
-	if(keys.at(4)) panForce.y -= panVel;
-	if(keys.at(5)) panForce.y += panVel;
-	if(keys.at(6)) panForce.x -= panVel;
-	if(keys.at(7)) panForce.x += panVel;
-}
-
-void Player::drawCamPos() {
-	string camPosString = "Pos: " + ofToString(cam.getPosition());
-	ofDrawBitmapString(camPosString, 10, 10);
+void Player::drawPos() {
+	string posString = "Pos: " + ofToString(node.getPosition());
+	ofDrawBitmapString(posString, 10, 10);
 }
 
 void Player::fillRibbon() {
-	ofPoint pos = cam.getPosition();
+	glm::vec3 pos = node.getPosition();
 
 	ribbon.addVertex(pos); // make a new vertex
         ribbon.addColor(ofFloatColor(255));  // add a color at that vertex

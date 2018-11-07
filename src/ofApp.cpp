@@ -3,20 +3,19 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 	ofSetFrameRate(60);
-	ofSetVerticalSync(true);
-	ofBackground(10, 10, 10);
+	ofSetVerticalSync(false);
+	ofBackground(0, 0, 0);
 //	ofSetLogLevel(OF_LOG_VERBOSE);
-//	ofSetOrientation(OF_ORIENTATION_DEFAULT,false);
 
-//	glShadeModel(GL_SMOOTH);
+	glShadeModel(GL_SMOOTH);
 	glEnable(GL_NORMALIZE);
 	ofEnableDepthTest();
 
 	scale.set(0.01);
 
-	player.setup();
-	player2.setPosition(-240, -270, -300);
-	player2.lookAt(ofVec3f(0,0,0), ofVec3f(0, -1, 0));
+	player.setup(true);
+	player2.setup(false);
+	player2.moveTo(glm::vec3(-240, -270, -300));
 		
 	model.loadModel("Rosendal Teater_ARK Contiga skyveamfi.ifc", false);
 	model.setScale(scale.x, scale.y, scale.z);
@@ -43,11 +42,18 @@ void ofApp::setup(){
 	}
 
 	ofLogNotice("Loaded ") << house.size() << "elements";
-	light1.setPosition(-500,-500,-500);
-	light2.setPosition(500,500,500);
 
+//	light1.setParent(player.cam);
+	light1.setPosition(0, 0, 0);
+//	light1.setSpotlight(25);
+	light1.setSpotConcentration(100);
+//	light1.lookAt(ofVec3f(500,500,500));
+//	light2.setPosition(500,500,500);
 
-	// Multiplayer stuff
+	setupNetwork();
+}
+
+void ofApp::setupNetwork() {
 	ofxUDPSettings settings;
 	settings.sendTo("192.168.1.195", 12000);
 	settings.blocking = false;
@@ -57,20 +63,32 @@ void ofApp::setup(){
 	udpReceiver.Setup(settings);
 }
 
+//--------------------------------------------------------------
 void ofApp::update(){
 	player.update();
+	player2.update();
 	world.update();
+	updateNetwork();
 
+}
+
+void ofApp::updateNetwork() {
 	// Multiplayer stuff
 	// TODO Only send when pos is changed
-	ofPoint p = player.getPosition();
+	if(!(ofGetFrameNum() % 10)) {
+		glm::vec3 p = player.getPosition();
 
-	int x = (int)p.x;
-	int y = (int)p.y;
-	int z = (int)p.z;
+		int x = (int)p.x;
+		int y = (int)p.y;
+		int z = (int)p.z;
 
-	string sendMessage = ofToString(x) + "," + ofToString(y) + "," + ofToString(z);
-	udpSender.Send(sendMessage.c_str(), sendMessage.length());
+		string sendMessage = ofToString(x) + "," + ofToString(y) + "," + ofToString(z);
+		udpSender.Send(sendMessage.c_str(), sendMessage.length());
+	}
+
+	if(!(ofGetFrameNum() % 120)) {
+		player2.moveTo(randomPoint());
+	}
 
 	char udpMessage[100000];
 	if(udpReceiver.Receive(udpMessage, 100000)){
@@ -78,30 +96,33 @@ void ofApp::update(){
 		ofLogNotice("Received udp:") << recMessage;
 
 		vector<string> coordinates = ofSplitString(recMessage, ",");
-		ofPoint pos;
+		glm::vec3 pos;
 		pos.x = stoi(coordinates.at(0));
 		pos.y = stoi(coordinates.at(1));
 		pos.z = stoi(coordinates.at(2));
 
-		player2.setPosition(pos);
+		player2.moveTo(pos);
 	}
 }
 
+//--------------------------------------------------------------
 void ofApp::draw(){
 	ofSetColor(255);
 	light1.enable();
-	light2.enable();
+//	light2.enable();
 
 	player.cam.begin();
 	drawHouse();	
 	player2.draw();
 	player.drawRibbon();
+	ofSetColor(255,0,0);
+	ofSetColor(255, 255, 255);
 
-	// world.drawDebug();
+//	world.drawDebug();
 //	model.drawFaces();
 	player.cam.end();
 	light1.disable();
-	light2.disable();
+//	light2.disable();
 
 	ofSetColor(255, 255, 255, 255);
 	ofFill();
@@ -122,8 +143,8 @@ void ofApp::drawHouse() {
 	}
 }
 
-ofPoint ofApp::randomPoint(int min, int max) {
-	ofPoint p(ofRandom(min, max),ofRandom(min, max),ofRandom(min, max));
+glm::vec3 ofApp::randomPoint(int min, int max) {
+	glm::vec3 p(ofRandom(min, max),ofRandom(min, max),ofRandom(min, max));
 
 	return p;
 }
