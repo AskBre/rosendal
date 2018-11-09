@@ -4,19 +4,19 @@ void Player::setup(bool _isLocal) {
 	isLocal = _isLocal;
 
 	keys.resize(8);
+
+	cam.setParent(node);
 	node.setPosition(-240,-270,-300);
 	node.lookAt(ofVec3f(0,0,0), ofVec3f(0, -1, 0));
 
-	cam.setParent(node);
-
 	ribbon.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
-	ribbonMaterial.setDiffuseColor(ofFloatColor::red);
+	if(isLocal) ribbonMaterial.setDiffuseColor(ofFloatColor::red);
+	else ribbonMaterial.setDiffuseColor(ofFloatColor::blue);
 }
 
 void Player::update() {
 	fillRibbon();
 	updatePos();
-
 }
 
 void Player::draw() {
@@ -63,7 +63,6 @@ void Player::keyPressed(int key){
 			keys.at(7) = true;
 			break;
 	}
-
 }
 
 void Player::keyReleased(int key){
@@ -93,7 +92,6 @@ void Player::keyReleased(int key){
 			keys.at(7) = false;
 			break;
 	}
-
 }
 
 //--------------------------------------------------------------

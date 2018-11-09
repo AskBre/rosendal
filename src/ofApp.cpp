@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 	ofSetFrameRate(60);
-	ofSetVerticalSync(false);
+	ofSetVerticalSync(true);
 	ofBackground(0, 0, 0);
 //	ofSetLogLevel(OF_LOG_VERBOSE);
 
@@ -12,10 +12,6 @@ void ofApp::setup(){
 	ofEnableDepthTest();
 
 	scale.set(0.01);
-
-	player.setup(true);
-	player2.setup(false);
-	player2.moveTo(glm::vec3(-240, -270, -300));
 		
 	model.loadModel("Rosendal Teater_ARK Contiga skyveamfi.ifc", false);
 	model.setScale(scale.x, scale.y, scale.z);
@@ -23,8 +19,11 @@ void ofApp::setup(){
 	world.setup();
 	world.setGravity( ofVec3f(0, 0, 0) );
 	world.enableGrabbing();
-//	world.enableDebugDraw();
+	world.enableDebugDraw();
 	world.setCamera(&player.cam);
+
+	player.setup(true);
+	player2.setup(false);
 
 	vector<string> meshNames = model.getMeshNames();
 
@@ -45,8 +44,9 @@ void ofApp::setup(){
 
 //	light1.setParent(player.cam);
 	light1.setPosition(0, 0, 0);
+//	light1.setAmbient();
 //	light1.setSpotlight(25);
-	light1.setSpotConcentration(100);
+//	light1.setSpotConcentration(100);
 //	light1.lookAt(ofVec3f(500,500,500));
 //	light2.setPosition(500,500,500);
 
@@ -65,9 +65,9 @@ void ofApp::setupNetwork() {
 
 //--------------------------------------------------------------
 void ofApp::update(){
+	world.update();
 	player.update();
 	player2.update();
-	world.update();
 	updateNetwork();
 
 }
@@ -115,6 +115,7 @@ void ofApp::draw(){
 	drawHouse();	
 	player2.draw();
 	player.drawRibbon();
+	player2.drawRibbon();
 	ofSetColor(255,0,0);
 	ofSetColor(255, 255, 255);
 
@@ -127,7 +128,7 @@ void ofApp::draw(){
 	ofSetColor(255, 255, 255, 255);
 	ofFill();
 	ofDrawRectRounded(0, 0, 75, 20, 5);
-	ofSetColor(0,0,0,255);
+	ofSetColor(50,50,50,255);
 	ofDrawBitmapString(ofGetFrameRate(), 10, 10);
 }
 
