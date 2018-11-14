@@ -1,20 +1,23 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxBullet.h"
 
 class Player : public ofBaseApp{
 	public:
-		void setup(bool _isLocal);
+		void setup(ofxBulletWorldRigid &_world, bool _isLocal);
 		void update();
 
 		void draw();
 		void drawRibbon();
+		void drawBullets();
 
 		void moveTo(glm::vec3 pos);
 
 		void keyPressed(int key);
 		void keyReleased(int key);
 
+		ofxBulletWorldRigid* world;
 		ofNode node;
 		ofCamera cam;
 
@@ -25,6 +28,7 @@ class Player : public ofBaseApp{
 		void drawPos();
 
 		void fillRibbon();
+		void shootBullet();
 
 		bool isLocal;
 
@@ -37,4 +41,6 @@ class Player : public ofBaseApp{
 
 		ofMesh ribbon;
 		ofMaterial ribbonMaterial;
+
+		deque<unique_ptr<ofxBulletRigidBody>> bullets;
 };

@@ -1,9 +1,10 @@
 #include "Player.h"
 
-void Player::setup(bool _isLocal) {
+void Player::setup(ofxBulletWorldRigid &_world, bool _isLocal) {
+	world = &_world;
 	isLocal = _isLocal;
 
-	keys.resize(8);
+	keys.resize(9);
 
 	cam.setParent(node);
 	node.setPosition(-240,-270,-300);
@@ -17,6 +18,7 @@ void Player::setup(bool _isLocal) {
 void Player::update() {
 	fillRibbon();
 	updatePos();
+	if(keys.at(8)) shootBullet();
 }
 
 void Player::draw() {
@@ -29,6 +31,10 @@ void Player::drawRibbon() {
 	ribbonMaterial.begin();
 	ribbon.drawFaces();
 	ribbonMaterial.end();
+}
+
+void Player::drawBullets() {
+	for(auto &b : bullets) b->draw();
 }
 
 void Player::moveTo(glm::vec3 pos) {
@@ -62,6 +68,9 @@ void Player::keyPressed(int key){
 		case OF_KEY_LEFT:
 			keys.at(7) = true;
 			break;
+		case ' ':
+			keys.at(8) = true;
+			break;
 	}
 }
 
@@ -90,6 +99,9 @@ void Player::keyReleased(int key){
 			break;
 		case OF_KEY_LEFT:
 			keys.at(7) = false;
+			break;
+		case ' ':
+			keys.at(8) = false;
 			break;
 	}
 }
@@ -156,4 +168,21 @@ void Player::fillRibbon() {
 	pos.x += 5;
 	ribbon.addVertex(pos); // make a new vertex
         ribbon.addColor(ofFloatColor(255));  // add a color at that vertex
+}
+
+void Player::shootBullet() {
+	ofLogNotice("\nFire!");
+	unique_ptr<ofxBulletSphere> bullet(new ofxBulletSphere());
+
+	bullet->create(world->world, node.getPosition(), 1, 1);
+	bullet->setDamping(0);
+	bullet->add();
+
+	auto frc = node.getLookAtDir();
+	frc = glm::normalize(frc);
+	bullet->applyCentralForce(frc * 40000);
+
+	bullets.push_back(move(bullet));
+
+	if(bullets.size() > 1000) bullets.pop_front();
 }

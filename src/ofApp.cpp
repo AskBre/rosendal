@@ -22,8 +22,8 @@ void ofApp::setup(){
 	world.enableDebugDraw();
 	world.setCamera(&player.cam);
 
-	player.setup(true);
-	player2.setup(false);
+	player.setup(world, true);
+	player2.setup(world, false);
 
 	vector<string> meshNames = model.getMeshNames();
 
@@ -113,11 +113,10 @@ void ofApp::draw(){
 
 	player.cam.begin();
 	drawHouse();	
+	player.drawBullets();
 	player2.draw();
 	player.drawRibbon();
 	player2.drawRibbon();
-	ofSetColor(255,0,0);
-	ofSetColor(255, 255, 255);
 
 //	world.drawDebug();
 //	model.drawFaces();
