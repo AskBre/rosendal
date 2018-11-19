@@ -4,15 +4,20 @@ void Player::setup(ofxBulletWorldRigid &_world, bool _isLocal) {
 	world = &_world;
 	isLocal = _isLocal;
 
+	shader.load("shaders/noise");
+
 	keys.resize(9);
 
 	cam.setParent(node);
 	node.setPosition(-240,-270,-300);
 	node.lookAt(ofVec3f(0,0,0), ofVec3f(0, -1, 0));
 
+	ribbonColor.set(ofRandom(1000), ofRandom(1000), ofRandom(1000), 1);
+	ribbonColor *= 0.001;
+
 	ribbon.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
-	if(isLocal) ribbonMaterial.setDiffuseColor(ofFloatColor::red);
-	else ribbonMaterial.setDiffuseColor(ofFloatColor::blue);
+//	if(isLocal) ribbonMaterial.setDiffuseColor(ofFloatColor::red);
+//	else ribbonMaterial.setDiffuseColor(ofFloatColor::blue);
 }
 
 void Player::update() {
@@ -28,9 +33,16 @@ void Player::draw() {
 }
 
 void Player::drawRibbon() {
-	ribbonMaterial.begin();
+//	ribbonMaterial.begin();
+	shader.begin();
+
+	shader.setUniform1f("timeValX", ofGetElapsedTimef() * 0.1 );
+	shader.setUniform1f("timeValY", -ofGetElapsedTimef() * 0.18 );
+
 	ribbon.drawFaces();
-	ribbonMaterial.end();
+
+	shader.end();
+//	ribbonMaterial.end();
 }
 
 void Player::drawBullets() {
@@ -162,12 +174,12 @@ void Player::drawPos() {
 void Player::fillRibbon() {
 	glm::vec3 pos = node.getPosition();
 
-	ribbon.addVertex(pos); // make a new vertex
-        ribbon.addColor(ofFloatColor(255));  // add a color at that vertex
+	ribbon.addVertex(pos);
+        ribbon.addColor(ribbonColor);
 
 	pos.x += 5;
 	ribbon.addVertex(pos); // make a new vertex
-        ribbon.addColor(ofFloatColor(255));  // add a color at that vertex
+        ribbon.addColor(ribbonColor);
 }
 
 void Player::shootBullet() {

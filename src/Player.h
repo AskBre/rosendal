@@ -40,7 +40,9 @@ class Player : public ofBaseApp{
 		vector<bool> keys;
 
 		ofMesh ribbon;
-		ofMaterial ribbonMaterial;
+//		ofMaterial ribbonMaterial;
+		ofFloatColor ribbonColor;
+		ofShader shader;
 
 		deque<unique_ptr<ofxBulletRigidBody>> bullets;
 };

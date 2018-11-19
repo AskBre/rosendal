@@ -7,9 +7,10 @@ void ofApp::setup(){
 	ofBackground(0, 0, 0);
 //	ofSetLogLevel(OF_LOG_VERBOSE);
 
-	glShadeModel(GL_SMOOTH);
-	glEnable(GL_NORMALIZE);
+//	glShadeModel(GL_SMOOTH);
+//	glEnable(GL_NORMALIZE);
 	ofEnableDepthTest();
+	ofEnableAlphaBlending();
 
 	scale.set(0.01);
 		
@@ -69,7 +70,6 @@ void ofApp::update(){
 	player.update();
 	player2.update();
 	updateNetwork();
-
 }
 
 void ofApp::updateNetwork() {
@@ -108,10 +108,13 @@ void ofApp::updateNetwork() {
 //--------------------------------------------------------------
 void ofApp::draw(){
 	ofSetColor(255);
+	ofFill();
+
 	light1.enable();
 //	light2.enable();
 
 	player.cam.begin();
+
 	drawHouse();	
 	player.drawBullets();
 	player2.draw();
@@ -123,6 +126,7 @@ void ofApp::draw(){
 	player.cam.end();
 	light1.disable();
 //	light2.disable();
+
 
 	ofSetColor(255, 255, 255, 255);
 	ofFill();
