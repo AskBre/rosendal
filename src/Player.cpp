@@ -183,7 +183,6 @@ void Player::fillRibbon() {
 }
 
 void Player::shootBullet() {
-	ofLogNotice("\nFire!");
 	unique_ptr<ofxBulletSphere> bullet(new ofxBulletSphere());
 
 	bullet->create(world->world, node.getPosition(), 1, 1);
@@ -196,5 +195,5 @@ void Player::shootBullet() {
 
 	bullets.push_back(move(bullet));
 
-	if(bullets.size() > 1000) bullets.pop_front();
+	if(bullets.size() > 100) bullets.pop_front();
 }

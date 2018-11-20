@@ -7,8 +7,8 @@ void ofApp::setup(){
 	ofBackground(0, 0, 0);
 //	ofSetLogLevel(OF_LOG_VERBOSE);
 
-//	glShadeModel(GL_SMOOTH);
-//	glEnable(GL_NORMALIZE);
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_NORMALIZE);
 	ofEnableDepthTest();
 	ofEnableAlphaBlending();
 
