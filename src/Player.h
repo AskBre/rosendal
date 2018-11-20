@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxBullet.h"
+#include "ofxGamepadHandler.h"
 
 class Player : public ofBaseApp{
 	public:
@@ -17,6 +18,7 @@ class Player : public ofBaseApp{
 		void keyPressed(int key);
 		void keyReleased(int key);
 
+
 		ofxBulletWorldRigid* world;
 		ofNode node;
 		ofCamera cam;
@@ -24,6 +26,10 @@ class Player : public ofBaseApp{
 		glm::vec3 getPosition(){return node.getPosition();};
 
 	private:
+		void axisChanged(ofxGamepadAxisEvent &e);
+		void buttonPressed(ofxGamepadButtonEvent &e);
+		void buttonReleased(ofxGamepadButtonEvent &e);
+
 		void updatePos();
 		void drawPos();
 
@@ -36,6 +42,8 @@ class Player : public ofBaseApp{
 
 		glm::vec3 movForce;
 		glm::vec3 panForce;
+		glm::vec3 movAmt;
+		glm::vec3 panAmt;
 
 		vector<bool> keys;
 

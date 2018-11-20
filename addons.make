@@ -1,3 +1,4 @@
 ofxAssimpModelLoader
 ofxBullet
 ofxNetwork
+ofxGamepad

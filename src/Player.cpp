@@ -8,6 +8,15 @@ void Player::setup(ofxBulletWorldRigid &_world, bool _isLocal) {
 
 	keys.resize(9);
 
+	if(ofxGamepadHandler::get()->getNumPads()>0){
+			ofxGamepad* pad = ofxGamepadHandler::get()->getGamepad(0);
+			ofAddListener(pad->onAxisChanged, this, &Player::axisChanged);
+			ofAddListener(pad->onButtonPressed, this, &Player::buttonPressed);
+			ofAddListener(pad->onButtonReleased, this, &Player::buttonReleased);
+	} else {
+		ofLogNotice("Gamepad") << "No gamepad connected";
+	}
+
 	cam.setParent(node);
 	node.setPosition(-240,-270,-300);
 	node.lookAt(ofVec3f(0,0,0), ofVec3f(0, -1, 0));
@@ -55,33 +64,37 @@ void Player::moveTo(glm::vec3 pos) {
 
 //--------------------------------------------------------------
 void Player::keyPressed(int key){
+
+	float maxMov = 1;
+	float maxPan = 0.5;
+
 	switch (key) {
 		case 'w':
-			keys.at(0) = true;
+			movAmt.z = -maxMov;
 			break;
 		case 's':
-			keys.at(1) = true;
+			movAmt.z = maxMov;
 			break;
 		case 'd':
-			keys.at(2) = true;
+			movAmt.x = maxMov;
 			break;
 		case 'a':
-			keys.at(3) = true;
+			movAmt.x = -maxMov;
 			break;
 		case OF_KEY_UP:
-			keys.at(4) = true;
+			panAmt.y = -maxPan;
 			break;
 		case OF_KEY_DOWN:
-			keys.at(5) = true;
+			panAmt.y = maxPan;
 			break;
 		case OF_KEY_RIGHT:
-			keys.at(6) = true;
+			panAmt.x = -maxPan;
 			break;
 		case OF_KEY_LEFT:
-			keys.at(7) = true;
+			panAmt.x = maxPan;
 			break;
 		case ' ':
-			keys.at(8) = true;
+			shootBullet();
 			break;
 	}
 }
@@ -89,33 +102,70 @@ void Player::keyPressed(int key){
 void Player::keyReleased(int key){
 	switch (key) {
 		case 'w':
-			keys.at(0) = false;
+			movAmt.z = 0;
 			break;
 		case 's':
-			keys.at(1) = false;
+			movAmt.z = 0;
 			break;
 		case 'd':
-			keys.at(2) = false;
+			movAmt.x = 0;
 			break;
 		case 'a':
-			keys.at(3) = false;
+			movAmt.x = 0;
 			break;
 		case OF_KEY_UP:
-			keys.at(4) = false;
+			panAmt.y = 0;
 			break;
 		case OF_KEY_DOWN:
-			keys.at(5) = false;
+			panAmt.y = 0;
 			break;
 		case OF_KEY_RIGHT:
-			keys.at(6) = false;
+			panAmt.x = 0;
 			break;
 		case OF_KEY_LEFT:
-			keys.at(7) = false;
-			break;
-		case ' ':
-			keys.at(8) = false;
+			panAmt.x = 0;
 			break;
 	}
+}
+
+//--------------------------------------------------------------
+void Player::axisChanged(ofxGamepadAxisEvent& e) {
+	float maxMov = 1;
+	float maxPan = 0.5;
+	switch (e.axis) {
+		// Left joystick
+		case 0:
+			panAmt.x = -e.value * maxPan;
+			break;
+		case 1:
+			panAmt.y = e.value * maxPan;
+			break;
+		// Right joystick
+		case 3:
+			movAmt.x = ofMap(e.value, -1, 1, -maxMov, maxMov, true);
+			break;
+		case 4:
+			panAmt.y = e.value * maxPan;
+			break;
+		// L2
+		case 2:
+			movAmt.z = ofMap(e.value, -1, 1, 0, maxMov, true);
+			break;
+		// R2
+		case 5:
+			movAmt.z = ofMap(e.value, -1, 1, 0, -maxMov, true);
+			break;
+		default:
+			break;
+	}
+	cout << "AXIS " << e.axis << " VALUE " << ofToString(e.value) << endl;
+}
+
+void Player::buttonPressed(ofxGamepadButtonEvent& e) {
+	shootBullet();
+}
+
+void Player::buttonReleased(ofxGamepadButtonEvent& e) {
 }
 
 //--------------------------------------------------------------
@@ -123,6 +173,9 @@ void Player::updatePos() {
 	
 	// Only look for keys and update stuff if player is locally controllable
 	if(isLocal) {
+		movForce += movAmt;
+		panForce += panAmt;
+
 		if(movForce != glm::vec3(0)) {
 			node.dolly(movForce.z);
 			node.truck(movForce.x);
@@ -135,18 +188,6 @@ void Player::updatePos() {
 			panForce *= 0.9;
 		}
 
-		float movVel = 1;
-		float panVel = 0.5;
-
-		if(keys.at(0)) movForce.z -= movVel;
-		if(keys.at(1)) movForce.z += movVel;
-		if(keys.at(2)) movForce.x += movVel;
-		if(keys.at(3)) movForce.x -= movVel;
-
-		if(keys.at(4)) panForce.y -= panVel;
-		if(keys.at(5)) panForce.y += panVel;
-		if(keys.at(6)) panForce.x -= panVel;
-		if(keys.at(7)) panForce.x += panVel;
 	} else {
 		if(node.getPosition() != targetPos) {
 			ofNode tmpNode = node;;
