@@ -18,7 +18,6 @@ class Player : public ofBaseApp{
 		void keyPressed(int key);
 		void keyReleased(int key);
 
-
 		ofxBulletWorldRigid* world;
 		ofNode node;
 		ofCamera cam;
@@ -53,4 +52,5 @@ class Player : public ofBaseApp{
 		ofShader shader;
 
 		deque<unique_ptr<ofxBulletRigidBody>> bullets;
+		bool isBulletReady = true;
 };

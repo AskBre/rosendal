@@ -32,7 +32,6 @@ void Player::setup(ofxBulletWorldRigid &_world, bool _isLocal) {
 void Player::update() {
 	fillRibbon();
 	updatePos();
-	if(keys.at(8)) shootBullet();
 }
 
 void Player::draw() {
@@ -132,37 +131,40 @@ void Player::keyReleased(int key){
 void Player::axisChanged(ofxGamepadAxisEvent& e) {
 	float maxMov = 1;
 	float maxPan = 0.5;
+	ofLogNotice("Axis") << e.value;
 	switch (e.axis) {
 		// Left joystick
 		case 0:
-			panAmt.x = -e.value * maxPan;
+			movAmt.x = ofMap(e.value, -1, 1, -maxMov, maxMov, true);
 			break;
 		case 1:
-			panAmt.y = e.value * maxPan;
+			movAmt.z = ofMap(e.value, -1, 1, -maxMov, maxMov, true);
 			break;
 		// Right joystick
 		case 3:
-			movAmt.x = ofMap(e.value, -1, 1, -maxMov, maxMov, true);
+			panAmt.x = -(e.value - 0.0583657) * maxPan;
 			break;
 		case 4:
 			panAmt.y = e.value * maxPan;
 			break;
 		// L2
 		case 2:
-			movAmt.z = ofMap(e.value, -1, 1, 0, maxMov, true);
+			if(e.value < 0) isBulletReady = true;
+			if(e.value > 0 && isBulletReady) shootBullet();
 			break;
 		// R2
 		case 5:
-			movAmt.z = ofMap(e.value, -1, 1, 0, -maxMov, true);
+			if(e.value < 0) isBulletReady = true;
+			if(e.value > 0 && isBulletReady) shootBullet();
 			break;
 		default:
 			break;
 	}
-	cout << "AXIS " << e.axis << " VALUE " << ofToString(e.value) << endl;
 }
 
 void Player::buttonPressed(ofxGamepadButtonEvent& e) {
-	shootBullet();
+//	shootBullet();
+	ofLogNotice("Button") << e.button;
 }
 
 void Player::buttonReleased(ofxGamepadButtonEvent& e) {
@@ -237,4 +239,6 @@ void Player::shootBullet() {
 	bullets.push_back(move(bullet));
 
 	if(bullets.size() > 100) bullets.pop_front();
+
+	isBulletReady = false;
 }
