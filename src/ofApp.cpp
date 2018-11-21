@@ -43,14 +43,15 @@ void ofApp::setup(){
 
 	ofLogNotice("Loaded ") << house.size() << "elements";
 
-//	light1.setParent(player.cam);
 	light1.setPosition(0, 0, 0);
-//	light1.setAmbient();
-//	light1.setSpotlight(25);
-//	light1.setSpotConcentration(100);
-//	light1.lookAt(ofVec3f(500,500,500));
-//	light2.setPosition(500,500,500);
 
+	light2.setParent(player.node);
+	light2.setSpotlight(10);
+	light2.setSpotConcentration(100);
+
+	light3.setParent(player2.node);
+	light3.setSpotlight(10);
+	light3.setSpotConcentration(100);
 	setupNetwork();
 }
 
@@ -111,7 +112,8 @@ void ofApp::draw(){
 	ofFill();
 
 	light1.enable();
-//	light2.enable();
+	light2.enable();
+	light3.enable();
 
 	player.cam.begin();
 
@@ -119,13 +121,14 @@ void ofApp::draw(){
 	player.drawBullets();
 	player2.draw();
 	player.drawRibbon();
-	player2.drawRibbon();
+//	player2.drawRibbon();
 
 //	world.drawDebug();
 //	model.drawFaces();
 	player.cam.end();
 	light1.disable();
-//	light2.disable();
+	light2.disable();
+	light3.disable();
 
 
 	ofSetColor(255, 255, 255, 255);
