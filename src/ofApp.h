@@ -27,7 +27,7 @@ class ofApp : public ofBaseApp{
 
 		ofLight light1;
 		ofLight light2;
-		ofLight light3;
+
 		ofVec3f scale;
 
 		Player player;

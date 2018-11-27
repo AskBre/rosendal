@@ -30,7 +30,7 @@ void Player::setup(ofxBulletWorldRigid &_world, bool _isLocal) {
 }
 
 void Player::update() {
-	fillRibbon();
+	if(!(ofGetFrameNum()%2)) fillRibbon();
 	updatePos();
 }
 
@@ -131,7 +131,6 @@ void Player::keyReleased(int key){
 void Player::axisChanged(ofxGamepadAxisEvent& e) {
 	float maxMov = 1;
 	float maxPan = 0.5;
-	ofLogNotice("Axis") << e.value;
 	switch (e.axis) {
 		// Left joystick
 		case 0:
@@ -142,7 +141,7 @@ void Player::axisChanged(ofxGamepadAxisEvent& e) {
 			break;
 		// Right joystick
 		case 3:
-			panAmt.x = -(e.value - 0.0583657) * maxPan;
+			panAmt.x = -(e.value - 0.0643473) * maxPan;
 			break;
 		case 4:
 			panAmt.y = e.value * maxPan;
@@ -163,7 +162,6 @@ void Player::axisChanged(ofxGamepadAxisEvent& e) {
 }
 
 void Player::buttonPressed(ofxGamepadButtonEvent& e) {
-//	shootBullet();
 	ofLogNotice("Button") << e.button;
 }
 
@@ -172,7 +170,6 @@ void Player::buttonReleased(ofxGamepadButtonEvent& e) {
 
 //--------------------------------------------------------------
 void Player::updatePos() {
-	
 	// Only look for keys and update stuff if player is locally controllable
 	if(isLocal) {
 		movForce += movAmt;
@@ -218,11 +215,11 @@ void Player::fillRibbon() {
 	glm::vec3 pos = node.getPosition();
 
 	ribbon.addVertex(pos);
-        ribbon.addColor(ribbonColor);
+//        ribbon.addColor(ribbonColor);
 
-	pos.x += 5;
+	pos.x += 2;
 	ribbon.addVertex(pos); // make a new vertex
-        ribbon.addColor(ribbonColor);
+ //       ribbon.addColor(ribbonColor);
 }
 
 void Player::shootBullet() {

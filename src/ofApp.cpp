@@ -14,6 +14,7 @@ void ofApp::setup(){
 
 	scale.set(0.01);
 		
+	ofLogNotice("Loading theatre");
 	model.loadModel("Rosendal Teater_ARK Contiga skyveamfi.ifc", false);
 	model.setScale(scale.x, scale.y, scale.z);
 
@@ -26,19 +27,20 @@ void ofApp::setup(){
 	player.setup(world, true);
 	player2.setup(world, false);
 
-	vector<string> meshNames = model.getMeshNames();
-
+	ofLogNotice("Loading meshes");
 	for(unsigned i=0; i<model.getNumMeshes(); i++) {
+
+		houseMeshes.push_back(model.getMesh(i));
+		houseMaterials.push_back(model.getMaterialForMesh(i));
+
 		ofxBulletCustomShape* h;
 		h = new ofxBulletCustomShape();
 
-		h->addMesh(model.getMesh(i), scale, true);
+		h->addMesh(houseMeshes.at(i), scale, true);
 		h->create(world.world, randomPoint(), 10.);
 		h->add();
 
 		house.push_back(h);
-		houseMeshes.push_back(model.getMesh(i));
-		houseMaterials.push_back(model.getMaterialForMesh(i));
 	}
 
 	ofLogNotice("Loaded ") << house.size() << "elements";
@@ -49,9 +51,6 @@ void ofApp::setup(){
 	light2.setSpotlight(10);
 	light2.setSpotConcentration(100);
 
-	light3.setParent(player2.node);
-	light3.setSpotlight(10);
-	light3.setSpotConcentration(100);
 	setupNetwork();
 }
 
@@ -111,9 +110,9 @@ void ofApp::draw(){
 	ofSetColor(255);
 	ofFill();
 
+	ofEnableLighting();
 	light1.enable();
 	light2.enable();
-	light3.enable();
 
 	player.cam.begin();
 
@@ -126,10 +125,10 @@ void ofApp::draw(){
 //	world.drawDebug();
 //	model.drawFaces();
 	player.cam.end();
+
 	light1.disable();
 	light2.disable();
-	light3.disable();
-
+	ofDisableLighting();
 
 	ofSetColor(255, 255, 255, 255);
 	ofFill();
