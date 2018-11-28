@@ -1,4 +1,2 @@
 ofxAssimpModelLoader
-ofxBullet
 ofxNetwork
-ofxGamepad

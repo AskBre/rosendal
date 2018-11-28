@@ -1,12 +1,10 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxBullet.h"
-#include "ofxGamepadHandler.h"
 
 class Player : public ofBaseApp{
 	public:
-		void setup(ofxBulletWorldRigid &_world, bool _isLocal);
+		void setup(bool _isLocal);
 		void update();
 
 		void draw();
@@ -18,22 +16,16 @@ class Player : public ofBaseApp{
 		void keyPressed(int key);
 		void keyReleased(int key);
 
-		ofxBulletWorldRigid* world;
 		ofNode node;
 		ofCamera cam;
 
 		glm::vec3 getPosition(){return node.getPosition();};
 
 	private:
-		void axisChanged(ofxGamepadAxisEvent &e);
-		void buttonPressed(ofxGamepadButtonEvent &e);
-		void buttonReleased(ofxGamepadButtonEvent &e);
-
 		void updatePos();
 		void drawPos();
 
 		void fillRibbon();
-		void shootBullet();
 
 		bool isLocal;
 
@@ -50,7 +42,4 @@ class Player : public ofBaseApp{
 //		ofMaterial ribbonMaterial;
 		ofFloatColor ribbonColor;
 		ofShader shader;
-
-		deque<unique_ptr<ofxBulletRigidBody>> bullets;
-		bool isBulletReady = true;
 };

@@ -12,44 +12,21 @@ void ofApp::setup(){
 	ofEnableDepthTest();
 	ofEnableAlphaBlending();
 
-	scale.set(0.01);
+	scale.set(-1);
 		
 	ofLogNotice("Loading theatre");
-	model.loadModel("Rosendal Teater_ARK Contiga skyveamfi.ifc", false);
+	model.loadModel("Rosendal Teater_ARK Contiga skyveamfi.ifc", true);
 	model.setScale(scale.x, scale.y, scale.z);
+	model.setPosition(250, 250, 250);
 
-	world.setup();
-	world.setGravity( ofVec3f(0, 0, 0) );
-	world.enableGrabbing();
-	world.enableDebugDraw();
-	world.setCamera(&player.cam);
+//	origo = model.getPosition();
 
-	player.setup(world, true);
-	player2.setup(world, false);
+	player.setup(false);
 
-	ofLogNotice("Loading meshes");
-	for(unsigned i=0; i<model.getNumMeshes(); i++) {
-
-		houseMeshes.push_back(model.getMesh(i));
-		houseMaterials.push_back(model.getMaterialForMesh(i));
-
-		ofxBulletCustomShape* h;
-		h = new ofxBulletCustomShape();
-
-		h->addMesh(houseMeshes.at(i), scale, true);
-		h->create(world.world, randomPoint(), 10.);
-		h->add();
-
-		house.push_back(h);
-	}
-
-	ofLogNotice("Loaded ") << house.size() << "elements";
+	cam.lookAt(ofVec3f(0,0,0), ofVec3f(0, -1, 0));
 
 	light1.setPosition(0, 0, 0);
-
-	light2.setParent(player.node);
-	light2.setSpotlight(10);
-	light2.setSpotConcentration(100);
+	light1.setParent(cam);
 
 	setupNetwork();
 }
@@ -66,30 +43,21 @@ void ofApp::setupNetwork() {
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	world.update();
 	player.update();
-	player2.update();
+
+	glm::vec3 origo = model.getPosition();
+	origo.x += 200;
+	origo.y += 200;
+	origo.z += 400;
+
+	cam.orbitDeg(ofGetFrameNum()*0.25, 0, 1000, origo);
 	updateNetwork();
+
+	if(!(ofGetFrameNum()%250)) player.moveTo(ofPoint(ofRandom(1000),ofRandom(1000),ofRandom(1000)));
 }
 
 void ofApp::updateNetwork() {
 	// Multiplayer stuff
-	// TODO Only send when pos is changed
-	if(!(ofGetFrameNum() % 10)) {
-		glm::vec3 p = player.getPosition();
-
-		int x = (int)p.x;
-		int y = (int)p.y;
-		int z = (int)p.z;
-
-		string sendMessage = ofToString(x) + "," + ofToString(y) + "," + ofToString(z);
-		udpSender.Send(sendMessage.c_str(), sendMessage.length());
-	}
-
-	if(!(ofGetFrameNum() % 120)) {
-		player2.moveTo(randomPoint());
-	}
-
 	char udpMessage[100000];
 	if(udpReceiver.Receive(udpMessage, 100000)){
 		string recMessage = udpMessage;
@@ -101,7 +69,7 @@ void ofApp::updateNetwork() {
 		pos.y = stoi(coordinates.at(1));
 		pos.z = stoi(coordinates.at(2));
 
-		player2.moveTo(pos);
+//		player.moveTo(pos);
 	}
 }
 
@@ -112,22 +80,16 @@ void ofApp::draw(){
 
 	ofEnableLighting();
 	light1.enable();
-	light2.enable();
 
-	player.cam.begin();
+	cam.begin();
 
-	drawHouse();	
-	player.drawBullets();
-	player2.draw();
+	model.drawFaces();
+
 	player.drawRibbon();
-//	player2.drawRibbon();
 
-//	world.drawDebug();
-//	model.drawFaces();
-	player.cam.end();
+	cam.end();
 
 	light1.disable();
-	light2.disable();
 	ofDisableLighting();
 
 	ofSetColor(255, 255, 255, 255);
@@ -135,31 +97,4 @@ void ofApp::draw(){
 	ofDrawRectRounded(0, 0, 75, 20, 5);
 	ofSetColor(50,50,50,255);
 	ofDrawBitmapString(ofGetFrameRate(), 10, 10);
-}
-
-//--------------------------------------------------------------
-void ofApp::drawHouse() {
-	for(unsigned i=0; i<house.size(); i++) {
-		houseMaterials.at(i).begin();
-		house[i]->transformGL();
-		ofScale(scale);
-		houseMeshes.at(i).drawFaces();
-		house[i]->restoreTransformGL();
-		houseMaterials.at(i).end();
-	}
-}
-
-glm::vec3 ofApp::randomPoint(int min, int max) {
-	glm::vec3 p(ofRandom(min, max),ofRandom(min, max),ofRandom(min, max));
-
-	return p;
-}
-
-//--------------------------------------------------------------
-void ofApp::keyPressed(int key){
-	player.keyPressed(key);
-}
-
-void ofApp::keyReleased(int key){
-	player.keyReleased(key);
 }

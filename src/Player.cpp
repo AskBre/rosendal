@@ -1,24 +1,15 @@
 #include "Player.h"
 
-void Player::setup(ofxBulletWorldRigid &_world, bool _isLocal) {
-	world = &_world;
+void Player::setup(bool _isLocal) {
 	isLocal = _isLocal;
 
 	shader.load("shaders/noise");
 
 	keys.resize(9);
 
-	if(ofxGamepadHandler::get()->getNumPads()>0){
-			ofxGamepad* pad = ofxGamepadHandler::get()->getGamepad(0);
-			ofAddListener(pad->onAxisChanged, this, &Player::axisChanged);
-			ofAddListener(pad->onButtonPressed, this, &Player::buttonPressed);
-			ofAddListener(pad->onButtonReleased, this, &Player::buttonReleased);
-	} else {
-		ofLogNotice("Gamepad") << "No gamepad connected";
-	}
-
 	cam.setParent(node);
-	node.setPosition(-240,-270,-300);
+//	node.setPosition(-240,-270,-300);
+	node.setPosition(ofRandom(1000), ofRandom(1000), ofRandom(1000));
 	node.lookAt(ofVec3f(0,0,0), ofVec3f(0, -1, 0));
 
 	ribbonColor.set(ofRandom(1000), ofRandom(1000), ofRandom(1000), 1);
@@ -51,10 +42,6 @@ void Player::drawRibbon() {
 
 	shader.end();
 //	ribbonMaterial.end();
-}
-
-void Player::drawBullets() {
-	for(auto &b : bullets) b->draw();
 }
 
 void Player::moveTo(glm::vec3 pos) {
@@ -92,9 +79,6 @@ void Player::keyPressed(int key){
 		case OF_KEY_LEFT:
 			panAmt.x = maxPan;
 			break;
-		case ' ':
-			shootBullet();
-			break;
 	}
 }
 
@@ -125,47 +109,6 @@ void Player::keyReleased(int key){
 			panAmt.x = 0;
 			break;
 	}
-}
-
-//--------------------------------------------------------------
-void Player::axisChanged(ofxGamepadAxisEvent& e) {
-	float maxMov = 1;
-	float maxPan = 0.5;
-	switch (e.axis) {
-		// Left joystick
-		case 0:
-			movAmt.x = ofMap(e.value, -1, 1, -maxMov, maxMov, true);
-			break;
-		case 1:
-			movAmt.z = ofMap(e.value, -1, 1, -maxMov, maxMov, true);
-			break;
-		// Right joystick
-		case 3:
-			panAmt.x = -(e.value - 0.0643473) * maxPan;
-			break;
-		case 4:
-			panAmt.y = e.value * maxPan;
-			break;
-		// L2
-		case 2:
-			if(e.value < 0) isBulletReady = true;
-			if(e.value > 0 && isBulletReady) shootBullet();
-			break;
-		// R2
-		case 5:
-			if(e.value < 0) isBulletReady = true;
-			if(e.value > 0 && isBulletReady) shootBullet();
-			break;
-		default:
-			break;
-	}
-}
-
-void Player::buttonPressed(ofxGamepadButtonEvent& e) {
-	ofLogNotice("Button") << e.button;
-}
-
-void Player::buttonReleased(ofxGamepadButtonEvent& e) {
 }
 
 //--------------------------------------------------------------
@@ -217,25 +160,7 @@ void Player::fillRibbon() {
 	ribbon.addVertex(pos);
 //        ribbon.addColor(ribbonColor);
 
-	pos.x += 2;
+	pos.x += 5;
 	ribbon.addVertex(pos); // make a new vertex
  //       ribbon.addColor(ribbonColor);
-}
-
-void Player::shootBullet() {
-	unique_ptr<ofxBulletSphere> bullet(new ofxBulletSphere());
-
-	bullet->create(world->world, node.getPosition(), 1, 1);
-	bullet->setDamping(0);
-	bullet->add();
-
-	auto frc = node.getLookAtDir();
-	frc = glm::normalize(frc);
-	bullet->applyCentralForce(frc * 40000);
-
-	bullets.push_back(move(bullet));
-
-	if(bullets.size() > 100) bullets.pop_front();
-
-	isBulletReady = false;
 }
