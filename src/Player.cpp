@@ -31,6 +31,7 @@ void Player::setup(ofxBulletWorldRigid &_world, bool _isLocal) {
 
 void Player::update() {
 	if(!(ofGetFrameNum()%2)) fillRibbon();
+//	if(!(ofGetFrameNum()%160)) ribbon.mergeDuplicateVertices();
 	updatePos();
 }
 
@@ -141,7 +142,7 @@ void Player::axisChanged(ofxGamepadAxisEvent& e) {
 			break;
 		// Right joystick
 		case 3:
-			panAmt.x = -(e.value - 0.0643473) * maxPan;
+			panAmt.x = -(e.value - 0.0583657) * maxPan;
 			break;
 		case 4:
 			panAmt.y = e.value * maxPan;

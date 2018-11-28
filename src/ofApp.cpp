@@ -7,10 +7,10 @@ void ofApp::setup(){
 	ofBackground(0, 0, 0);
 //	ofSetLogLevel(OF_LOG_VERBOSE);
 
-	glShadeModel(GL_SMOOTH);
-	glEnable(GL_NORMALIZE);
+//	glShadeModel(GL_SMOOTH);
+//	glEnable(GL_NORMALIZE);
 	ofEnableDepthTest();
-	ofEnableAlphaBlending();
+//	ofEnableAlphaBlending();
 
 	scale.set(0.01);
 		
@@ -120,10 +120,8 @@ void ofApp::draw(){
 	player.drawBullets();
 	player2.draw();
 	player.drawRibbon();
-//	player2.drawRibbon();
+	player2.drawRibbon();
 
-//	world.drawDebug();
-//	model.drawFaces();
 	player.cam.end();
 
 	light1.disable();
