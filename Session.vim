@@ -4,7 +4,7 @@ let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
 silent tabonly
-cd ~/Development/of_v0.10.1_linux64gcc6_release/apps/myApps/rosendal
+cd ~/of_v0.10.1_linux64gcc6_release/apps/myApps/rosendal
 if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
@@ -49,7 +49,7 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 10 - ((9 * winheight(0) + 52) / 105)
+let s:l = 10 - ((4 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -69,8 +69,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 146 + 149) / 299)
-exe 'vert 2resize ' . ((&columns * 152 + 149) / 299)
+exe 'vert 1resize ' . ((&columns * 77 + 79) / 159)
+exe 'vert 2resize ' . ((&columns * 81 + 79) / 159)
 argglobal
 setlocal fdm=manual
 setlocal fde=0
@@ -81,7 +81,7 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 52) / 105)
+let s:l = 1 - ((0 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -99,15 +99,15 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 52) / 105)
+let s:l = 1 - ((0 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 1
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 146 + 149) / 299)
-exe 'vert 2resize ' . ((&columns * 152 + 149) / 299)
+exe 'vert 1resize ' . ((&columns * 77 + 79) / 159)
+exe 'vert 2resize ' . ((&columns * 81 + 79) / 159)
 tabnext
 edit src/Player.cpp
 set splitbelow splitright
@@ -122,8 +122,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 148 + 149) / 299)
-exe 'vert 2resize ' . ((&columns * 150 + 149) / 299)
+exe 'vert 1resize ' . ((&columns * 78 + 79) / 159)
+exe 'vert 2resize ' . ((&columns * 80 + 79) / 159)
 argglobal
 setlocal fdm=manual
 setlocal fde=0
@@ -134,12 +134,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 7 - ((6 * winheight(0) + 52) / 105)
+let s:l = 7 - ((3 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 7
-normal! 035|
+normal! 0
 wincmd w
 argglobal
 if bufexists('src/Player.h') | buffer src/Player.h | else | edit src/Player.h | endif
@@ -152,15 +152,15 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 52) / 105)
+let s:l = 1 - ((0 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 1
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 148 + 149) / 299)
-exe 'vert 2resize ' . ((&columns * 150 + 149) / 299)
+exe 'vert 1resize ' . ((&columns * 78 + 79) / 159)
+exe 'vert 2resize ' . ((&columns * 80 + 79) / 159)
 tabnext
 edit bin/data/shaders/noise.frag
 set splitbelow splitright
@@ -175,8 +175,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 149 + 149) / 299)
-exe 'vert 2resize ' . ((&columns * 149 + 149) / 299)
+exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
+exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
 argglobal
 setlocal fdm=manual
 setlocal fde=0
@@ -187,7 +187,7 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 52) / 105)
+let s:l = 1 - ((0 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -205,15 +205,15 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 52) / 105)
+let s:l = 1 - ((0 * winheight(0) + 23) / 46)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 1
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 149 + 149) / 299)
-exe 'vert 2resize ' . ((&columns * 149 + 149) / 299)
+exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
+exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
 tabnext 2
 set stal=1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0

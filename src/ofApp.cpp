@@ -12,11 +12,8 @@ void ofApp::setup(){
 	ofEnableDepthTest();
 	ofEnableAlphaBlending();
 
-	scale.set(-1);
-		
 	ofLogNotice("Loading theatre");
 	model.loadModel("Rosendal Teater_ARK Contiga skyveamfi.ifc", true);
-	model.setScale(scale.x, scale.y, scale.z);
 	model.setPosition(250, 250, 250);
 
 //	origo = model.getPosition();
@@ -46,9 +43,9 @@ void ofApp::update(){
 	player.update();
 
 	glm::vec3 origo = model.getPosition();
-	origo.x += 200;
-	origo.y += 200;
-	origo.z += 400;
+	origo.x -= 200;
+	origo.y -= 200;
+	origo.z -= 400;
 
 	cam.orbitDeg(ofGetFrameNum()*0.25, 0, 1000, origo);
 	updateNetwork();
@@ -83,7 +80,10 @@ void ofApp::draw(){
 
 	cam.begin();
 
+	ofPushMatrix();
+	ofRotate(180);
 	model.drawFaces();
+	ofPopMatrix();
 
 	player.drawRibbon();
 
