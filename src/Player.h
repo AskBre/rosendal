@@ -28,6 +28,8 @@ class Player : public ofBaseApp{
 		ofNode node;
 		ofCamera cam;
 
+		ofSoundPlayer bulletSound;
+
 		glm::vec3 getPosition(){return node.getPosition();};
 
 

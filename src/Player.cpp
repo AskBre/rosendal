@@ -5,6 +5,8 @@ void Player::setup(ofxBulletWorldRigid &_world, bool _isLocal) {
 	isLocal = _isLocal;
 
 	shader.load("shaders/noise");
+	bulletSound.load("laserShot.wav");
+	bulletSound.setMultiPlay(true);
 
 	glm::vec3 scale(0.1);
 
@@ -236,6 +238,8 @@ void Player::fillRibbon() {
 }
 
 void Player::shootBullet() {
+	bulletSound.play();
+
 	isShootingBullet = true;
 
 	unique_ptr<ofxBulletSphere> bullet(new ofxBulletSphere());
@@ -253,4 +257,5 @@ void Player::shootBullet() {
 	if(bullets.size() > 100) bullets.pop_front();
 
 	isBulletReady = false;
+
 }
