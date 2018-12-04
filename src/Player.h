@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxBullet.h"
 #include "ofxGamepadHandler.h"
+#include "ofxAssimpModelLoader.h"
 #include "playerNum.h"
 
 class Player : public ofBaseApp{
@@ -29,7 +30,8 @@ class Player : public ofBaseApp{
 
 		glm::vec3 getPosition(){return node.getPosition();};
 
-//		int playerNum = 1;
+
+		ofxAssimpModelLoader ship;
 
 	private:
 		void axisChanged(ofxGamepadAxisEvent &e);

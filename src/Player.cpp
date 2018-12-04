@@ -6,6 +6,11 @@ void Player::setup(ofxBulletWorldRigid &_world, bool _isLocal) {
 
 	shader.load("shaders/noise");
 
+	glm::vec3 scale(0.1);
+
+	ship.loadModel("SpaceShip.obj", false);
+	ship.setScale(scale.x, scale.y, scale.z);
+
 	keys.resize(9);
 
 	if(ofxGamepadHandler::get()->getNumPads()>0){
@@ -19,7 +24,7 @@ void Player::setup(ofxBulletWorldRigid &_world, bool _isLocal) {
 
 	cam.setParent(node);
 	node.setPosition(-240,-270,-300);
-//	node.lookAt(ofVec3f(0,0,0), ofVec3f(0, -1, 0));
+	node.lookAt(ofVec3f(0,0,0), ofVec3f(0, -1, 0));
 
 	ribbonColor.set(ofRandom(1000), ofRandom(1000), ofRandom(1000), 1);
 	ribbonColor *= 0.001;
@@ -37,7 +42,7 @@ void Player::update() {
 
 void Player::draw() {
 	node.transformGL();
-		ofDrawCone(10,30);
+		ship.drawFaces();
 	node.restoreTransformGL();
 }
 
