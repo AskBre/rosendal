@@ -232,7 +232,7 @@ void Player::shootBullet() {
 
 	auto frc = node.getLookAtDir();
 	frc = glm::normalize(frc);
-	bullet->applyCentralForce(frc * 40000);
+	bullet->applyCentralForce(frc * 20000);
 
 	bullets.push_back(move(bullet));
 
