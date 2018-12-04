@@ -56,19 +56,21 @@ void ofApp::setup(){
 
 void ofApp::setupNetwork() {
 	ofxUDPSettings settings;
-	if(player.playerNum == 1) settings.sendTo("127.0.0.1", 12000);
-	if(player.playerNum == 2) settings.sendTo("127.0.0.1", 12001);
+	if(playerNum == 1) settings.sendTo("127.0.0.1", 12000);
+	if(playerNum == 2) settings.sendTo("127.0.0.1", 12001);
 	settings.blocking = false;
 	udpSender.Setup(settings);
 
-	if(player.playerNum == 1) settings.sendTo("192.168.12.139", 12002);
-	if(player.playerNum == 2) settings.sendTo("192.168.12.139", 12003);
-	ribSender.Setup(settings);
-
-	if(player.playerNum == 1) settings.receiveOn(12001);
-	if(player.playerNum == 2) settings.receiveOn(12000);
+	if(playerNum == 1) settings.receiveOn(12001);
+	if(playerNum == 2) settings.receiveOn(12000);
 
 	udpReceiver.Setup(settings);
+
+	ofxUDPSettings ribSettings;
+	if(playerNum == 1) ribSettings.sendTo("192.168.12.139", 12002);
+	if(playerNum == 2) ribSettings.sendTo("192.168.12.139", 12003);
+	ribSettings.blocking = false;
+	ribSender.Setup(ribSettings);
 }
 
 //--------------------------------------------------------------
@@ -82,7 +84,7 @@ void ofApp::update(){
 void ofApp::updateNetwork() {
 	// Multiplayer stuff
 	// TODO Only send when pos is changed
-	if(!(ofGetFrameNum() % 10)) {
+//	if(!(ofGetFrameNum() % 2)) {
 		glm::vec3 p = player.node.getPosition();
 		glm::vec3 o = player.node.getOrientationEulerDeg();
 
@@ -93,22 +95,18 @@ void ofApp::updateNetwork() {
 		int e = (int)o.y;
 		int f = (int)o.z;
 		int g = (int)player.isShootingBullet;
+		
+		player.isShootingBullet = false;
 
 		string sendMessage = ofToString(a) + "," + ofToString(b) + "," + ofToString(c) + "," 
 			+ ofToString(d) + "," + ofToString(e) + "," + ofToString(f) + "," + ofToString(g);
 		udpSender.Send(sendMessage.c_str(), sendMessage.length());
 		ribSender.Send(sendMessage.c_str(), sendMessage.length());
-	}
-
-	// Bot
-//	if(!(ofGetFrameNum() % 120)) {
-//		player2.moveTo(randomPoint());
 //	}
 
 	char udpMessage[100000];
 	if(udpReceiver.Receive(udpMessage, 100000)){
 		string recMessage = udpMessage;
-		ofLogNotice("Received udp:") << recMessage;
 
 		vector<string> msg = ofSplitString(recMessage, ",");
 		glm::vec3 p;

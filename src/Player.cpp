@@ -19,7 +19,7 @@ void Player::setup(ofxBulletWorldRigid &_world, bool _isLocal) {
 
 	cam.setParent(node);
 	node.setPosition(-240,-270,-300);
-	node.lookAt(ofVec3f(0,0,0), ofVec3f(0, -1, 0));
+//	node.lookAt(ofVec3f(0,0,0), ofVec3f(0, -1, 0));
 
 	ribbonColor.set(ofRandom(1000), ofRandom(1000), ofRandom(1000), 1);
 	ribbonColor *= 0.001;
@@ -33,13 +33,10 @@ void Player::update() {
 	if(!(ofGetFrameNum()%2)) fillRibbon();
 //	if(!(ofGetFrameNum()%160)) ribbon.mergeDuplicateVertices();
 	updatePos();
-
-	isShootingBullet = false;
 }
 
 void Player::draw() {
 	node.transformGL();
-		ofRotate(90);
 		ofDrawCone(10,30);
 	node.restoreTransformGL();
 }
@@ -137,22 +134,27 @@ void Player::keyReleased(int key){
 
 //--------------------------------------------------------------
 void Player::axisChanged(ofxGamepadAxisEvent& e) {
-	float maxMov = 0.5;
-	float maxPan = 0.25;
+	if(!isLocal) return;
+
+	float maxMov = 0.25;
+	float maxPan = 0.12;
 	switch (e.axis) {
 		// Left joystick
 		case 0:
-			movAmt.x = ofMap(e.value, -1, 1, -maxMov, maxMov, true);
+			if(playerNum == 2) movAmt.x = ofMap(e.value - 0.0620584, -1, 1, -maxMov, maxMov, true);
+			else movAmt.x = ofMap(e.value, -1, 1, -maxMov, maxMov, true);
 			break;
 		case 1:
-			movAmt.z = ofMap(e.value, -1, 1, -maxMov, maxMov, true);
+			if(playerNum == 2) movAmt.z = ofMap(e.value - 0.0598612, 1, -1, -maxMov, maxMov, true);
+			else movAmt.z = ofMap(e.value, 1, -1, -maxMov, maxMov, true);
 			break;
 		// Right joystick
 		case 3:
-			panAmt.x = -(e.value - 0.0583657) * maxPan;
+			if(playerNum == 1) panAmt.x = -(e.value - 0.0583657) * maxPan;
+			else panAmt.x = -e.value * maxPan;
 			break;
 		case 4:
-			panAmt.y = e.value * maxPan;
+			panAmt.y = -e.value * maxPan;
 			break;
 		// L2
 		case 2:
@@ -205,7 +207,7 @@ void Player::updatePos() {
 		node.setOrientation(targetOrient);
 		/*
 		if(node.getOrientationEulerDeg() != targetOrient) {
-			glm::vec3 newOrient = glm::mix(node.getOrientationEulerDeg(), targetOrient, amtVec);
+			glm::vec3 newOrient = glm::mix(node.getOrientationEulerDeg(), targetOrient, 0.002);
 			node.setOrientation(newOrient);
 		}
 		*/
@@ -221,11 +223,11 @@ void Player::fillRibbon() {
 	glm::vec3 pos = node.getPosition();
 
 	ribbon.addVertex(pos);
-//        ribbon.addColor(ribbonColor);
+        ribbon.addColor(ribbonColor);
 
 	pos.x += 2;
 	ribbon.addVertex(pos); // make a new vertex
- //       ribbon.addColor(ribbonColor);
+       ribbon.addColor(ribbonColor);
 }
 
 void Player::shootBullet() {
