@@ -16,8 +16,6 @@ void ofApp::setup(){
 	model.loadModel("Rosendal Teater_ARK Contiga skyveamfi.ifc", true);
 	model.setPosition(250, 250, 250);
 
-//	origo = model.getPosition();
-
 	player.setup(false);
 
 	cam.lookAt(ofVec3f(0,0,0), ofVec3f(0, -1, 0));
@@ -30,11 +28,10 @@ void ofApp::setup(){
 
 void ofApp::setupNetwork() {
 	ofxUDPSettings settings;
-	settings.sendTo("192.168.1.195", 12000);
-	settings.blocking = false;
-	udpSender.Setup(settings);
+//	settings.sendTo("192.168.1.195", 12000);
 
-	settings.receiveOn(12001);
+	settings.blocking = false;
+	settings.receiveOn(12000);
 	udpReceiver.Setup(settings);
 }
 
@@ -50,7 +47,7 @@ void ofApp::update(){
 	cam.orbitDeg(ofGetFrameNum()*0.25, 0, 1000, origo);
 	updateNetwork();
 
-	if(!(ofGetFrameNum()%250)) player.moveTo(ofPoint(ofRandom(1000),ofRandom(1000),ofRandom(1000)));
+//	if(!(ofGetFrameNum()%250)) player.moveTo(ofPoint(ofRandom(1000),ofRandom(1000),ofRandom(1000)));
 }
 
 void ofApp::updateNetwork() {
@@ -66,7 +63,7 @@ void ofApp::updateNetwork() {
 		pos.y = stoi(coordinates.at(1));
 		pos.z = stoi(coordinates.at(2));
 
-//		player.moveTo(pos);
+		player.moveTo(pos);
 	}
 }
 

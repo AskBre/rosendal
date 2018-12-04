@@ -8,8 +8,10 @@ void Player::setup(bool _isLocal) {
 	keys.resize(9);
 
 	cam.setParent(node);
-//	node.setPosition(-240,-270,-300);
-	node.setPosition(ofRandom(1000), ofRandom(1000), ofRandom(1000));
+
+	targetPos = glm::vec3(-240,-270,-300);
+	node.setPosition(targetPos);
+//	node.setPosition(ofRandom(1000), ofRandom(1000), ofRandom(1000));
 	node.lookAt(ofVec3f(0,0,0), ofVec3f(0, -1, 0));
 
 	ribbonColor.set(ofRandom(1000), ofRandom(1000), ofRandom(1000), 1);

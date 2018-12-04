@@ -24,6 +24,5 @@ class ofApp : public ofBaseApp{
 		Player player;
 		ofCamera cam;
 
-		ofxUDPManager udpSender;
 		ofxUDPManager udpReceiver;
 };
