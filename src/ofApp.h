@@ -40,5 +40,6 @@ class ofApp : public ofBaseApp{
 		vector<ofMaterial> houseMaterials;
 
 		ofxUDPManager udpSender;
+		ofxUDPManager ribSender;
 		ofxUDPManager udpReceiver;
 };

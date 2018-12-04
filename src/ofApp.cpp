@@ -61,10 +61,16 @@ void ofApp::setupNetwork() {
 	settings.blocking = false;
 	udpSender.Setup(settings);
 
+
 	if(player.playerNum == 1) settings.receiveOn(12001);
 	if(player.playerNum == 2) settings.receiveOn(12000);
 
 	udpReceiver.Setup(settings);
+
+
+	if(player.playerNum == 1) settings.sendTo("192.168.12.139", 12002);
+	if(player.playerNum == 2) settings.sendTo("192.168.12.139", 12003);
+	ribSender.Setup(settings);
 }
 
 //--------------------------------------------------------------
@@ -92,6 +98,7 @@ void ofApp::updateNetwork() {
 		string sendMessage = ofToString(a) + "," + ofToString(b) + "," + ofToString(c) + "," 
 			+ ofToString(d) + "," + ofToString(e) + "," + ofToString(f);
 		udpSender.Send(sendMessage.c_str(), sendMessage.length());
+		ribSender.Send(sendMessage.c_str(), sendMessage.length());
 	}
 
 	// Bot
