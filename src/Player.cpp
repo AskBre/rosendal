@@ -130,8 +130,8 @@ void Player::keyReleased(int key){
 
 //--------------------------------------------------------------
 void Player::axisChanged(ofxGamepadAxisEvent& e) {
-	float maxMov = 1;
-	float maxPan = 0.5;
+	float maxMov = 0.5;
+	float maxPan = 0.25;
 	switch (e.axis) {
 		// Left joystick
 		case 0:
