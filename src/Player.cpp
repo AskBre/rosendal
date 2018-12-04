@@ -9,7 +9,7 @@ void Player::setup(ofxBulletWorldRigid &_world, bool _isLocal) {
 	keys.resize(9);
 
 	if(ofxGamepadHandler::get()->getNumPads()>0){
-			ofxGamepad* pad = ofxGamepadHandler::get()->getGamepad(0);
+			ofxGamepad* pad = ofxGamepadHandler::get()->getGamepad(playerNum-1);
 			ofAddListener(pad->onAxisChanged, this, &Player::axisChanged);
 			ofAddListener(pad->onButtonPressed, this, &Player::buttonPressed);
 			ofAddListener(pad->onButtonReleased, this, &Player::buttonReleased);

@@ -30,6 +30,7 @@ class ofApp : public ofBaseApp{
 
 		ofVec3f scale;
 
+		// Change this for left or right TV
 		Player player;
 		Player player2;
 

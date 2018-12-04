@@ -24,6 +24,8 @@ class Player : public ofBaseApp{
 
 		glm::vec3 getPosition(){return node.getPosition();};
 
+		int playerNum = 1;
+
 	private:
 		void axisChanged(ofxGamepadAxisEvent &e);
 		void buttonPressed(ofxGamepadButtonEvent &e);

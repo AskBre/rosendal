@@ -56,11 +56,14 @@ void ofApp::setup(){
 
 void ofApp::setupNetwork() {
 	ofxUDPSettings settings;
-	settings.sendTo("192.168.1.195", 12000);
+	if(player.playerNum == 1) settings.sendTo("127.0.0.1", 12000);
+	if(player.playerNum == 2) settings.sendTo("127.0.0.1", 12001);
 	settings.blocking = false;
 	udpSender.Setup(settings);
 
-	settings.receiveOn(12001);
+	if(player.playerNum == 1) settings.receiveOn(12001);
+	if(player.playerNum == 2) settings.receiveOn(12000);
+
 	udpReceiver.Setup(settings);
 }
 
@@ -86,9 +89,10 @@ void ofApp::updateNetwork() {
 		udpSender.Send(sendMessage.c_str(), sendMessage.length());
 	}
 
-	if(!(ofGetFrameNum() % 120)) {
-		player2.moveTo(randomPoint());
-	}
+	// Bot
+//	if(!(ofGetFrameNum() % 120)) {
+//		player2.moveTo(randomPoint());
+//	}
 
 	char udpMessage[100000];
 	if(udpReceiver.Receive(udpMessage, 100000)){
