@@ -79,13 +79,18 @@ void ofApp::updateNetwork() {
 	// Multiplayer stuff
 	// TODO Only send when pos is changed
 	if(!(ofGetFrameNum() % 10)) {
-		glm::vec3 p = player.getPosition();
+		glm::vec3 p = player.node.getPosition();
+		glm::vec3 o = player.node.getOrientationEulerDeg();
 
-		int x = (int)p.x;
-		int y = (int)p.y;
-		int z = (int)p.z;
+		int a = (int)p.x;
+		int b = (int)p.y;
+		int c = (int)p.z;
+		int d = (int)o.x;
+		int e = (int)o.y;
+		int f = (int)o.z;
 
-		string sendMessage = ofToString(x) + "," + ofToString(y) + "," + ofToString(z);
+		string sendMessage = ofToString(a) + "," + ofToString(b) + "," + ofToString(c) + "," 
+			+ ofToString(d) + "," + ofToString(e) + "," + ofToString(f);
 		udpSender.Send(sendMessage.c_str(), sendMessage.length());
 	}
 
@@ -99,13 +104,18 @@ void ofApp::updateNetwork() {
 		string recMessage = udpMessage;
 		ofLogNotice("Received udp:") << recMessage;
 
-		vector<string> coordinates = ofSplitString(recMessage, ",");
-		glm::vec3 pos;
-		pos.x = stoi(coordinates.at(0));
-		pos.y = stoi(coordinates.at(1));
-		pos.z = stoi(coordinates.at(2));
+		vector<string> msg = ofSplitString(recMessage, ",");
+		glm::vec3 p;
+		glm::vec3 o;
+		p.x = stoi(msg.at(0));
+		p.y = stoi(msg.at(1));
+		p.z = stoi(msg.at(2));
+		o.x = stoi(msg.at(3));
+		o.y = stoi(msg.at(4));
+		o.z = stoi(msg.at(5));
 
-		player2.moveTo(pos);
+		player2.moveTo(p);
+		player2.rotateTo(o);
 	}
 }
 

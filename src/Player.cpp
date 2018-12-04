@@ -37,6 +37,7 @@ void Player::update() {
 
 void Player::draw() {
 	node.transformGL();
+		ofRotate(90);
 		ofDrawCone(10,30);
 	node.restoreTransformGL();
 }
@@ -58,8 +59,12 @@ void Player::drawBullets() {
 	for(auto &b : bullets) b->draw();
 }
 
-void Player::moveTo(glm::vec3 pos) {
-	targetPos = pos;	
+void Player::moveTo(glm::vec3 position) {
+	targetPos = position;	
+}
+
+void Player::rotateTo(glm::vec3 orientation) {
+	targetOrient = orientation;	
 }
 
 //--------------------------------------------------------------
@@ -189,20 +194,15 @@ void Player::updatePos() {
 		}
 
 	} else {
+		glm::vec3 amtVec(0.02);
+
 		if(node.getPosition() != targetPos) {
-			ofNode tmpNode = node;;
-			tmpNode.lookAt(targetPos, glm::vec3(0,1,0));
-			tmpNode.tiltDeg(90);
-			glm::quat lookDiff = glm::mix(node.getOrientationQuat(), tmpNode.getOrientationQuat(), (float)0.05);
-			node.setOrientation(lookDiff);
-
-			glm::vec3 amtVec;
-			amtVec.x = 0.02;
-			amtVec.y = 0.02;
-			amtVec.z = 0.02;
-
 			glm::vec3 newPos = glm::mix(node.getPosition(), targetPos, amtVec);
 			node.setPosition(newPos);
+		}
+		if(node.getOrientationEulerDeg() != targetOrient) {
+			glm::vec3 newOrient = glm::mix(node.getOrientationEulerDeg(), targetOrient, amtVec);
+			node.setOrientation(newOrient);
 		}
 	}
 }

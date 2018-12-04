@@ -13,7 +13,8 @@ class Player : public ofBaseApp{
 		void drawRibbon();
 		void drawBullets();
 
-		void moveTo(glm::vec3 pos);
+		void moveTo(glm::vec3 position);
+		void rotateTo(glm::vec3 orientation);
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -40,6 +41,7 @@ class Player : public ofBaseApp{
 		bool isLocal;
 
 		glm::vec3 targetPos;
+		glm::vec3 targetOrient;
 
 		glm::vec3 movForce;
 		glm::vec3 panForce;
