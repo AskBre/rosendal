@@ -15,6 +15,9 @@ class Player : public ofBaseApp{
 
 		void moveTo(glm::vec3 position);
 		void rotateTo(glm::vec3 orientation);
+		void shootBullet();
+
+		bool isShootingBullet = false;
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -36,7 +39,6 @@ class Player : public ofBaseApp{
 		void drawPos();
 
 		void fillRibbon();
-		void shootBullet();
 
 		bool isLocal;
 

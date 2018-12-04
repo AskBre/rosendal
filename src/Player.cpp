@@ -33,6 +33,8 @@ void Player::update() {
 	if(!(ofGetFrameNum()%2)) fillRibbon();
 //	if(!(ofGetFrameNum()%160)) ribbon.mergeDuplicateVertices();
 	updatePos();
+
+	isShootingBullet = false;
 }
 
 void Player::draw() {
@@ -168,7 +170,6 @@ void Player::axisChanged(ofxGamepadAxisEvent& e) {
 }
 
 void Player::buttonPressed(ofxGamepadButtonEvent& e) {
-	ofLogNotice("Button") << e.button;
 }
 
 void Player::buttonReleased(ofxGamepadButtonEvent& e) {
@@ -200,10 +201,14 @@ void Player::updatePos() {
 			glm::vec3 newPos = glm::mix(node.getPosition(), targetPos, amtVec);
 			node.setPosition(newPos);
 		}
+
+		node.setOrientation(targetOrient);
+		/*
 		if(node.getOrientationEulerDeg() != targetOrient) {
 			glm::vec3 newOrient = glm::mix(node.getOrientationEulerDeg(), targetOrient, amtVec);
 			node.setOrientation(newOrient);
 		}
+		*/
 	}
 }
 
@@ -224,6 +229,8 @@ void Player::fillRibbon() {
 }
 
 void Player::shootBullet() {
+	isShootingBullet = true;
+
 	unique_ptr<ofxBulletSphere> bullet(new ofxBulletSphere());
 
 	bullet->create(world->world, node.getPosition(), 1, 1);

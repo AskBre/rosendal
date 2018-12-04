@@ -61,16 +61,14 @@ void ofApp::setupNetwork() {
 	settings.blocking = false;
 	udpSender.Setup(settings);
 
+	if(player.playerNum == 1) settings.sendTo("192.168.12.139", 12002);
+	if(player.playerNum == 2) settings.sendTo("192.168.12.139", 12003);
+	ribSender.Setup(settings);
 
 	if(player.playerNum == 1) settings.receiveOn(12001);
 	if(player.playerNum == 2) settings.receiveOn(12000);
 
 	udpReceiver.Setup(settings);
-
-
-	if(player.playerNum == 1) settings.sendTo("192.168.12.139", 12002);
-	if(player.playerNum == 2) settings.sendTo("192.168.12.139", 12003);
-	ribSender.Setup(settings);
 }
 
 //--------------------------------------------------------------
@@ -94,9 +92,10 @@ void ofApp::updateNetwork() {
 		int d = (int)o.x;
 		int e = (int)o.y;
 		int f = (int)o.z;
+		int g = (int)player.isShootingBullet;
 
 		string sendMessage = ofToString(a) + "," + ofToString(b) + "," + ofToString(c) + "," 
-			+ ofToString(d) + "," + ofToString(e) + "," + ofToString(f);
+			+ ofToString(d) + "," + ofToString(e) + "," + ofToString(f) + "," + ofToString(g);
 		udpSender.Send(sendMessage.c_str(), sendMessage.length());
 		ribSender.Send(sendMessage.c_str(), sendMessage.length());
 	}
@@ -121,8 +120,11 @@ void ofApp::updateNetwork() {
 		o.y = stoi(msg.at(4));
 		o.z = stoi(msg.at(5));
 
+		int shoot = stoi(msg.at(6));
+
 		player2.moveTo(p);
 		player2.rotateTo(o);
+		if(shoot) player2.shootBullet();
 	}
 }
 
@@ -138,8 +140,12 @@ void ofApp::draw(){
 	player.cam.begin();
 
 	drawHouse();	
-	player.drawBullets();
+
 	player2.draw();
+
+	player.drawBullets();
+	player2.drawBullets();
+
 	player.drawRibbon();
 	player2.drawRibbon();
 
