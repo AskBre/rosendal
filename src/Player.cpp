@@ -35,14 +35,14 @@ void Player::draw() {
 
 void Player::drawRibbon() {
 //	ribbonMaterial.begin();
-	shader.begin();
+//	shader.begin();
 
 	shader.setUniform1f("timeValX", ofGetElapsedTimef() * 0.1 );
 	shader.setUniform1f("timeValY", -ofGetElapsedTimef() * 0.18 );
 
 	ribbon.drawFaces();
 
-	shader.end();
+//	shader.end();
 //	ribbonMaterial.end();
 }
 
@@ -160,9 +160,9 @@ void Player::fillRibbon() {
 	glm::vec3 pos = node.getPosition();
 
 	ribbon.addVertex(pos);
-//        ribbon.addColor(ribbonColor);
+        ribbon.addColor(ribbonColor);
 
 	pos.x += 5;
 	ribbon.addVertex(pos); // make a new vertex
- //       ribbon.addColor(ribbonColor);
+       ribbon.addColor(ribbonColor);
 }

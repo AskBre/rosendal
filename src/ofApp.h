@@ -21,8 +21,10 @@ class ofApp : public ofBaseApp{
 		ofLight light1;
 		ofLight light2;
 
-		Player player;
+		Player player1;
+		Player player2;
 		ofCamera cam;
 
-		ofxUDPManager udpReceiver;
+		ofxUDPManager udpReceiver1;
+		ofxUDPManager udpReceiver2;
 };
